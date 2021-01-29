@@ -27,13 +27,14 @@ public abstract class ObjBase : MonoBehaviour
     protected int indexOfAction;
 	protected int indexOfTime;
 
-	// 可能还需要的一个变量
-	// protected bool isChangingState;
+	// 防止多次触发
+	protected bool isChangingState;
 
 	protected void Start()
     {
         indexOfAction = 0;
         indexOfTime = 0;
+		isChangingState = false;
 		Init();
     }
 
@@ -48,7 +49,12 @@ public abstract class ObjBase : MonoBehaviour
         if (indexOfAction >= actions.Count)
             return;
 
-        switch(actions[indexOfAction])
+		if (isChangingState && actions.Count > 1)
+			return;
+
+		isChangingState = true;
+
+		switch (actions[indexOfAction])
         {
             case ACTION_TYPE.TRIGGER_SUDDEN:
                 indexOfAction++;
@@ -69,7 +75,7 @@ public abstract class ObjBase : MonoBehaviour
                 break;
             default:
                 break;
-        }   
+        }
     }
 
 
@@ -87,5 +93,7 @@ public abstract class ObjBase : MonoBehaviour
     {
         indexOfAction = 0;
         indexOfTime = 0;
-    }
+		isChangingState = false;
+
+	}
 }
