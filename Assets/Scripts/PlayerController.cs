@@ -260,20 +260,6 @@ public class PlayerController : MonoBehaviour
 				item.ColExit(this);
 		}
 	}
-
-
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Trigger"))
-        {
-            TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
-            if (item != null)
-            {
-                item.ColExit(this);
-            }
-        }
-    }
     
     private void ResetLayer()
     {
