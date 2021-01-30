@@ -7,18 +7,14 @@ public class BulletHit : MonoBehaviour
 {
     public GameObject bulletPrefab;
     public Camera cam;
+    [SerializeField]private Animator _animator;
     public float coolDown;
     public bool shootEnable;
-    
+    private bool _canShoot = true;
+
     private Vector3 _mousePosition;
     private Vector2 _bulletDirection;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     private void Update()
     {
@@ -26,10 +22,12 @@ public class BulletHit : MonoBehaviour
         _bulletDirection = (_mousePosition - transform.position).normalized;
         float angle = Mathf.Atan2(_bulletDirection.y, _bulletDirection.x) * Mathf.Rad2Deg;
         transform.eulerAngles = new Vector3(0, 0, angle);
-        if (Input.GetMouseButtonDown(1) && shootEnable) // 鼠标右键点击
+        if (Input.GetMouseButtonDown(1) && shootEnable && _canShoot) // 鼠标右键点击
         {
-            shootEnable = false;
-            Shoot();
+            _canShoot = false;
+            SoundManager.instance.BulletAudio();
+            _animator.SetBool("bullet_attack", true);
+            // Shoot();
             StartCoroutine(JudgeCoolDown());
         }
     }
@@ -37,10 +35,10 @@ public class BulletHit : MonoBehaviour
     private IEnumerator JudgeCoolDown()
     {
         yield return new WaitForSeconds(coolDown);
-        shootEnable = true;
+        _canShoot = true;
     }
-
-    private void Shoot()
+    
+    public void Shoot()
     {
         Instantiate(bulletPrefab, transform.position, Quaternion.Euler(transform.eulerAngles));
     }
