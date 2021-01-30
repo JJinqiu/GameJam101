@@ -166,7 +166,10 @@ public class PlayerController : MonoBehaviour
         {
             PowerUp2();
         }
+	}
 
+	private void OnTriggerEnter2D(Collider2D other)
+	{
 		if (other.gameObject.CompareTag("Trigger"))
 		{
 			TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
@@ -175,7 +178,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	private void OnCollisionExit2D(Collision2D other)
+	private void OnTriggerExit2D(Collider2D other)
 	{
 		if (other.gameObject.CompareTag("Trigger"))
 		{

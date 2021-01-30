@@ -5,13 +5,20 @@ using UnityEngine;
 // 碎裂的石板 -> 等待一段时间后，破坏自身，而后复原
 public class CrackedSlate : ObjBase
 {
-	public GameObject m_slate;
-
+	public GameObject slatePrefab;
+	private GameObject m_slate;
 	private ACTION_STATE m_state;
 
 	protected override void Init()
 	{
 		m_state = ACTION_STATE.STATE_ONE;
+		CreatSlate();
+	}
+
+	private void CreatSlate()
+	{
+		m_slate = Instantiate(slatePrefab, this.gameObject.transform.position, this.gameObject.transform.rotation);
+		m_slate.transform.SetParent(this.gameObject.transform);
 	}
 
 	protected override void ConcreteAction()
@@ -44,6 +51,7 @@ public class CrackedSlate : ObjBase
 	{
 		m_state++;
 		Debug.Log("破坏自身");
+		Destroy(m_slate);
 		base.ConcreteAction();
 		StartAction();
 	}
@@ -57,6 +65,7 @@ public class CrackedSlate : ObjBase
 	{
 		Debug.Log("复原");
 		m_state = ACTION_STATE.STATE_ONE;
+		CreatSlate();
 		base.ResetAction();
 	}
 }

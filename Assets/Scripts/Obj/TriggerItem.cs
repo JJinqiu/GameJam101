@@ -19,9 +19,9 @@ public class TriggerItem : MonoBehaviour
 
 	public void ColExit(PlayerController player)
 	{
-		if (player != null)
+		if (player != null && exitTarget != null)
 		{
-			enterTarget.ExitAction(player);
+			exitTarget.ExitAction(player);
 		}
 	}
 }
