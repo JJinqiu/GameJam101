@@ -187,7 +187,20 @@ public class PlayerController : MonoBehaviour
         {
             PowerUp2();
         }
+
+		if(other.gameObject.CompareTag("Slate"))
+		{
+			this.transform.parent = other.transform;
+		}
     }
+
+	private void OnCollisionExit2D(Collision2D other)
+	{
+		if (other.gameObject.CompareTag("Slate"))
+		{
+			this.transform.parent = null;
+		}
+	}
 
 	private void OnTriggerEnter2D(Collider2D other)
 	{
