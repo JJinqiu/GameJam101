@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform knifeHitBox;
     [SerializeField] private Transform bulletHitBox;
+    [SerializeField] private Transform sight;
 
     public LayerMask ground;
     public LayerMask twoWaysPlatForm;
@@ -233,6 +234,9 @@ public class PlayerController : MonoBehaviour
             case 3:
                 _sprintEnabled = true;
                 break;
+            case 4:
+                sight.gameObject.SetActive(false);
+                break;
             case 5:
                 _shootEnable = true;
                 break;
@@ -253,6 +257,9 @@ public class PlayerController : MonoBehaviour
             case 3: // 冲刺
                 _sprintEnabled = false;
                 break;
+            case 4:
+                sight.gameObject.SetActive(true);
+                break;
             case 5:
                 _shootEnable = false;
                 break;
@@ -268,6 +275,7 @@ public class PlayerController : MonoBehaviour
     {
         _attackEnable = true;
         _sprintEnabled = true;
+        sight.gameObject.SetActive(false);
         rangeCount = 4;
     }
 
@@ -281,7 +289,6 @@ public class PlayerController : MonoBehaviour
     private IEnumerator ChangeAbilty()
     {
         yield return new WaitForSeconds(durationTime);
-        ;
         int index = Random.Range(1, rangeCount + 1);
         ForbiddenAbility(index);
     }
