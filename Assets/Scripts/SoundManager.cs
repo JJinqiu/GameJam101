@@ -13,9 +13,12 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip jumpAudio;
     [SerializeField] private AudioClip knifeAudio;
     [SerializeField] private AudioClip bulletAudio;
+    [SerializeField] private AudioClip sprintAudio;
     [SerializeField] private AudioClip hurtAudio;
+    [SerializeField] private AudioClip deathAudio;
     [SerializeField] private AudioClip powerUpAudio;
     [SerializeField] private AudioClip collectionAudio;
+    
 
     private bool _audioEnable = true;
 
@@ -64,6 +67,24 @@ public class SoundManager : MonoBehaviour
         if (_audioEnable)
         {
             actionAudioSource.clip = bulletAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void SprintAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = sprintAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void DeathAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = deathAudio;
             actionAudioSource.Play();
         }
     }

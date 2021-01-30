@@ -9,6 +9,7 @@ TagManager:
   - Depot1
   - TwoWaysPlatform
   - Enemy
+  - Trigger
   layers:
   - Default
   - TransparentFX
