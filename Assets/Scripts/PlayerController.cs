@@ -166,9 +166,26 @@ public class PlayerController : MonoBehaviour
         {
             PowerUp2();
         }
-    }
 
-    private void ForbiddenAbility(int index)
+		if (other.gameObject.CompareTag("Trigger"))
+		{
+			TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
+			if (item != null)
+				item.ColEnter(this);
+		}
+	}
+
+	private void OnCollisionExit2D(Collision2D other)
+	{
+		if (other.gameObject.CompareTag("Trigger"))
+		{
+			TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
+			if (item != null)
+				item.ColExit(this);
+		}
+	}
+
+	private void ForbiddenAbility(int index)
     {
         switch (_lastIndex)
         {

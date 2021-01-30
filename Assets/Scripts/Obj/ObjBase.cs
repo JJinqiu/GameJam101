@@ -27,6 +27,8 @@ public abstract class ObjBase : MonoBehaviour
     protected int indexOfAction;
 	protected int indexOfTime;
 
+	protected PlayerController m_player;
+
 	// 防止多次触发
 	protected bool isChangingState;
 
@@ -43,8 +45,19 @@ public abstract class ObjBase : MonoBehaviour
 	{
 	}
 
+	public void EnterAction(PlayerController player)
+	{
+		m_player = player;
+		StartAction();
+	}
 
-	public void StartAction()
+	public void ExitAction(PlayerController player)
+	{
+		m_player = player;
+		ResetAction();
+	}
+
+	protected void StartAction()
     {
         if (indexOfAction >= actions.Count)
             return;
@@ -77,12 +90,6 @@ public abstract class ObjBase : MonoBehaviour
                 break;
         }
     }
-
-
-	public void EndAction()
-	{
-		ResetAction();
-	}
 
 	protected virtual void ConcreteAction()
     {
