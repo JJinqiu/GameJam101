@@ -47,6 +47,10 @@ public abstract class ObjBase : MonoBehaviour
 
 	public void EnterAction(PlayerController player)
 	{
+		if (isChangingState && actions.Count > 1)
+			return;
+
+		isChangingState = true;
 		m_player = player;
 		StartAction();
 	}
@@ -57,15 +61,10 @@ public abstract class ObjBase : MonoBehaviour
 		ResetAction();
 	}
 
-	protected void StartAction()
+	public void StartAction()
     {
         if (indexOfAction >= actions.Count)
-            return;
-
-		if (isChangingState && actions.Count > 1)
-			return;
-
-		isChangingState = true;
+            return;	
 
 		switch (actions[indexOfAction])
         {

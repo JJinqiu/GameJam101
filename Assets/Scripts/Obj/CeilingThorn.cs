@@ -5,11 +5,28 @@ using UnityEngine;
 //CEILING_THORN,  // 天花板刺 -> 钉刺掉落，触碰扣血
 public class CeilingThorn : ObjBase
 {
-	public GameObject m_thorn;
+	public GameObject thronPrefab;
+
+	private GameObject m_thorn;
+	private Rigidbody2D m_rigid;
+
+	protected override void Init()
+	{
+		CreatThorn();
+	}
+
+	private void CreatThorn()
+	{
+		m_thorn = Instantiate(thronPrefab, this.gameObject.transform.position, this.gameObject.transform.rotation);
+		m_thorn.transform.SetParent(this.gameObject.transform);
+		m_rigid = m_thorn.GetComponent<Rigidbody2D>();
+		m_rigid.gravityScale = 0;
+	}
 
 	protected override void ConcreteAction()
 	{
 		Debug.Log("天花板刺掉落");
+		m_rigid.gravityScale = 1;
 		base.ConcreteAction();
 		StartAction();
 	}
@@ -17,6 +34,8 @@ public class CeilingThorn : ObjBase
 	protected override void ResetAction()
 	{
 		Debug.Log("复原");
+		Destroy(m_thorn);
+		CreatThorn();
 		base.ResetAction();
 	}
 }
