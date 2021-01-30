@@ -37,7 +37,7 @@ public class Bullet : MonoBehaviour
             other.GetComponent<Enemy>().TakeDamage(damage);
         }
 
-        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("TwoWaysPlatform"))
+        if (other.gameObject.CompareTag("Ground"))
         {
             Destroy(gameObject);
         }
