@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Enemy
+  - Depot1
+  - Depot2
   layers:
   - Default
   - TransparentFX

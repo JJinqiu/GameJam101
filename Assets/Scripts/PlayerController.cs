@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer _renderer;
+    private Animator _animator;
     private bool _isGround;
     private bool _jumpPressed;
     private Color _originColor;
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour
     private bool _sprintEnabled;
     private int _lastIndex;
     private bool _attackEnable; // 近战攻击
+    private bool _shootEnable;
 
     [SerializeField] private Collider2D circleCollider;
     [SerializeField] private Collider2D boxCollider;
@@ -43,8 +45,8 @@ public class PlayerController : MonoBehaviour
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _renderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
         _originColor = _renderer.color;
-        _sprintEnabled = true;
     }
 
     // Start is called before the first frame update
@@ -69,16 +71,12 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(SprintTimeCount());
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && _attackEnable)
         {
             Attack();
         }
-    }
 
-    private void Attack()
-    {
-        knife.gameObject.SetActive(true);
-        StartCoroutine(AttackTime());
+        bulletHitBox.gameObject.GetComponent<BulletHit>().SetShootEnable(_shootEnable);
     }
 
     private void FixedUpdate()
@@ -87,6 +85,14 @@ public class PlayerController : MonoBehaviour
         GroundMovement();
         Jump();
         Sprint();
+        SwitchAnimation();
+    }
+
+    private void Attack()
+    {
+        SoundManager.instance.KnifeAudio();
+        knife.gameObject.SetActive(true);
+        StartCoroutine(AttackTime());
     }
 
     private void Sprint() // 冲刺
@@ -105,17 +111,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void SwitchAnimation()
+    {
+        _animator.SetFloat("running", Mathf.Abs(_rigidbody2D.velocity.x));
+    }
+
     private void GroundMovement() // 角色移动
     {
         float horizontalMove = Input.GetAxisRaw("Horizontal");
         _rigidbody2D.velocity = new Vector2(horizontalMove * walkSpeed, _rigidbody2D.velocity.y);
-        if (horizontalMove > 0) // 更改左右移动时角色朝向
+        if (horizontalMove != 0) // 更改左右移动时角色朝向
         {
-            transform.localScale = new Vector3(5, 8, 1);
-        }
-        else if (horizontalMove < 0)
-        {
-            transform.localScale = new Vector3(-5, 8, 1);
+            transform.localScale = new Vector3(horizontalMove, 1, 1);
         }
     }
 
@@ -129,12 +136,14 @@ public class PlayerController : MonoBehaviour
         if (_jumpPressed && _isGround)
         {
             _isGround = false;
+            SoundManager.instance.JumpAudio();
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, jumpForce);
             --_jumpCount;
             _jumpPressed = false;
         }
         else if (_jumpPressed && _jumpCount > 0)
         {
+            SoundManager.instance.JumpAudio();
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, jumpForce);
             --_jumpCount;
             _jumpPressed = false;
@@ -147,12 +156,25 @@ public class PlayerController : MonoBehaviour
         {
 			Hurt(other.gameObject.GetComponent<Enemy>().GetDamage());
         }
+
+        if (other.gameObject.CompareTag("Depot1"))
+        {
+            PowerUp1();
+        }
+
+        if (other.gameObject.CompareTag("Depot2"))
+        {
+            PowerUp2();
+        }
     }
 
     private void ForbiddenAbility(int index)
     {
         switch (_lastIndex)
         {
+            case 1:
+                SoundManager.instance.ResetAudio();
+                break;
             case 2:
                 _attackEnable = true;
                 break;
@@ -160,7 +182,7 @@ public class PlayerController : MonoBehaviour
                 _sprintEnabled = true;
                 break;
             case 5:
-                bulletHitBox.gameObject.GetComponent<BulletHit>().SetShootEnable(true);
+                _shootEnable = true;
                 break;
             case 6:
                 jumpCount = 2;
@@ -170,6 +192,9 @@ public class PlayerController : MonoBehaviour
         _lastIndex = index;
         switch (index)
         {
+            case 1:
+                SoundManager.instance.ForbiddenAudio();
+                break;
             case 2: // 攻击
                 _attackEnable = false;
                 break;
@@ -177,12 +202,28 @@ public class PlayerController : MonoBehaviour
                 _sprintEnabled = false;
                 break;
             case 5:
-                bulletHitBox.gameObject.GetComponent<BulletHit>().SetShootEnable(false);
+                _shootEnable = false;
                 break;
             case 6:
                 jumpCount = 1;
                 break;
         }
+
+        StartCoroutine(ChangeAbilty());
+    }
+
+    private void PowerUp1()
+    {
+        _attackEnable = true;
+        _sprintEnabled = true;
+        rangeCount = 4;
+    }
+
+    private void PowerUp2()
+    {
+        _shootEnable = true;
+        jumpCount = 2;
+        rangeCount = 6;
     }
 
     private IEnumerator ChangeAbilty()
