@@ -10,7 +10,6 @@ TagManager:
   - TwoWaysPlatform
   - Enemy
   - Trigger
-  - Slate
   layers:
   - Default
   - TransparentFX
