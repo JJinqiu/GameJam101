@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
     private bool _attackEnable; // 近战攻击
     private bool _shootEnable;
     private bool _hurtEnable = true;
+    private int _dir = 1;
 
     [SerializeField] private Collider2D circleCollider;
     [SerializeField] private Collider2D boxCollider;
@@ -31,6 +33,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform sprintObj;
     [SerializeField] private Transform doubleJumpObj;
     [SerializeField] private GameObject gasPrefab;
+    [SerializeField] private GameObject textFloat;
 
     public LayerMask ground;
     public LayerMask twoWaysPlatForm;
@@ -48,8 +51,9 @@ public class PlayerController : MonoBehaviour
     public float sprintTime;
     public float sprintSpeed;
     public float durationTime;
-    public float LayerChangeTime;
+    public float layerChangeTime;
     public float invincibleTime;
+    public float textFloatTime;
 
 
     private void Awake()
@@ -96,7 +100,6 @@ public class PlayerController : MonoBehaviour
 
         if (health <= 0)
         {
-            SoundManager.instance.DeathAudio();
             _animator.SetTrigger("die");
         }
 
@@ -175,11 +178,11 @@ public class PlayerController : MonoBehaviour
     private void GroundMovement() // 角色移动
     {
         float horizontalMove = Input.GetAxisRaw("Horizontal");
-        _rigidbody2D.velocity = new Vector2(horizontalMove * walkSpeed, _rigidbody2D.velocity.y);
+        _rigidbody2D.velocity = new Vector2(horizontalMove * walkSpeed * _dir, _rigidbody2D.velocity.y);
         if (horizontalMove != 0) // 更改左右移动时角色朝向
         {
             // _animator.SetBool("idle", false);
-            transform.localScale = new Vector3(horizontalMove, 1, 1);
+            transform.localScale = new Vector3(horizontalMove * _dir, 1, 1);
         }
     }
 
@@ -226,41 +229,32 @@ public class PlayerController : MonoBehaviour
         {
             PowerUp2();
         }
-
-		if(other.gameObject.CompareTag("Slate"))
-		{
-			this.transform.parent = other.transform;
-		}
     }
 
-	private void OnCollisionExit2D(Collision2D other)
-	{
-		if (other.gameObject.CompareTag("Slate"))
-		{
-			this.transform.parent = null;
-		}
-	}
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Trigger"))
+        {
+            TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
+            if (item != null)
+            {
+                item.ColEnter(this);
+            }
+        }
+    }
 
-	private void OnTriggerEnter2D(Collider2D other)
-	{
-		if (other.gameObject.CompareTag("Trigger"))
-		{
-			TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
-			if (item != null)
-				item.ColEnter(this);
-		}
-	}
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Trigger"))
+        {
+            TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
+            if (item != null)
+            {
+                item.ColExit(this);
+            }
+        }
+    }
 
-	private void OnTriggerExit2D(Collider2D other)
-	{
-		if (other.gameObject.CompareTag("Trigger"))
-		{
-			TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
-			if (item != null)
-				item.ColExit(this);
-		}
-	}
-    
     private void ResetLayer()
     {
         gameObject.layer = LayerMask.NameToLayer("Default");
@@ -388,7 +382,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator LayChange()
     {
-        yield return new WaitForSeconds(LayerChangeTime);
+        yield return new WaitForSeconds(layerChangeTime);
         gameObject.layer = LayerMask.NameToLayer("Default");
     }
 
@@ -397,5 +391,49 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(invincibleTime);
         _hurtEnable = true;
         _renderer.color = _originColor;
+    }
+
+    public void SetText(String value = "测试文字1")
+    {
+        textFloat.SetActive(true);
+        textFloat.GetComponent<TextMesh>().text = value;
+        StartCoroutine(TextFloatTime());
+    }
+
+    private IEnumerator TextFloatTime()
+    {
+        yield return new WaitForSeconds(textFloatTime);
+        textFloat.SetActive(false);
+    }
+
+    public void SetDirection(bool key) // 设置操纵方向，true正向
+    {
+        if (key)
+        {
+            _dir = 1;
+        }
+        else
+        {
+            _dir = -1;
+        }
+    }
+
+    public void RestoreAbility(int condition) // 恢复能力 0：最初始，1：第一次提升，2：第二次提升
+    {
+        if (condition == 1)
+        {
+            PowerUp1();
+        }
+
+        if (condition == 2)
+        {
+            PowerUp2();
+        }
+    }
+
+    public void Death()
+    {
+        SoundManager.instance.DeathAudio();
+        Destroy(gameObject);
     }
 }
