@@ -5,10 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
-  - Enemy
-  - Depot1
   - Depot2
-  - Trigger
+  - Depot1
+  - TwoWaysPlatform
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -19,7 +19,7 @@ TagManager:
   - 
   - 
   - Ground
-  - 
+  - TwoWaysPlatForm
   - 
   - 
   - 

@@ -34,13 +34,11 @@ public class Bullet : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log("2");
             other.GetComponent<Enemy>().TakeDamage(damage);
         }
 
         if (other.gameObject.CompareTag("Ground"))
         {
-            Debug.Log("2");
             Destroy(gameObject);
         }
     }

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer _renderer;
     private Animator _animator;
     private bool _isGround;
+    private bool _isTwoWaysPlatForm;
     private bool _jumpPressed;
     private Color _originColor;
     private int _jumpCount;
@@ -26,10 +27,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform bulletHitBox;
 
     public LayerMask ground;
+    public LayerMask twoWaysPlatForm;
     public Transform knife;
 
     public float walkSpeed;
-    public float jumpForce;
+    public float jumpForce1;
+    public float jumpForce2;
     public float coolDown;
     public float attackTime;
     public int jumpCount;
@@ -39,6 +42,7 @@ public class PlayerController : MonoBehaviour
     public float sprintTime;
     public float sprintSpeed;
     public float durationTime;
+    public float LayerChangeTime;
 
 
     private void Awake()
@@ -81,11 +85,13 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _isGround = Physics2D.OverlapCircle(groundCheck.position, 0.1f, ground);
+        _isTwoWaysPlatForm = Physics2D.OverlapCircle(groundCheck.position, 0.1f, twoWaysPlatForm);
+        _isGround = Physics2D.OverlapCircle(groundCheck.position, 0.1f, ground) || _isTwoWaysPlatForm;
         GroundMovement();
         Jump();
         Sprint();
         SwitchAnimation();
+        TwoWaysPlatFormCheck();
     }
 
     private void Attack()
@@ -114,6 +120,20 @@ public class PlayerController : MonoBehaviour
     private void SwitchAnimation()
     {
         _animator.SetFloat("running", Mathf.Abs(_rigidbody2D.velocity.x));
+        if (_isGround)
+        {
+            _animator.SetBool("falling", false);
+        }
+        else if (!_isGround && _rigidbody2D.velocity.y > 0)
+        {
+            _animator.SetBool("jumping", true);
+            _animator.SetBool("falling", false);
+        }
+        else if (_rigidbody2D.velocity.y < 0)
+        {
+            _animator.SetBool("falling", true);
+            _animator.SetBool("jumping", false);
+        }
     }
 
     private void GroundMovement() // 角色移动
@@ -137,14 +157,14 @@ public class PlayerController : MonoBehaviour
         {
             _isGround = false;
             SoundManager.instance.JumpAudio();
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, jumpForce);
+            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, jumpForce1);
             --_jumpCount;
             _jumpPressed = false;
         }
         else if (_jumpPressed && _jumpCount > 0)
         {
             SoundManager.instance.JumpAudio();
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, jumpForce);
+            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, jumpForce2);
             --_jumpCount;
             _jumpPressed = false;
         }
@@ -166,7 +186,7 @@ public class PlayerController : MonoBehaviour
         {
             PowerUp2();
         }
-	}
+    }
 
 	private void OnTriggerEnter2D(Collider2D other)
 	{
@@ -188,8 +208,20 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	private void ForbiddenAbility(int index)
+
+
+    private void ResetLayer()
     {
+        gameObject.layer = LayerMask.NameToLayer("Default");
+    }
+
+    private void ForbiddenAbility(int index)
+    {
+        if (_lastIndex == 1 || index == 1)
+        {
+            SoundManager.instance.ResetAudio();
+        }
+
         switch (_lastIndex)
         {
             case 1:
@@ -249,8 +281,8 @@ public class PlayerController : MonoBehaviour
     private IEnumerator ChangeAbilty()
     {
         yield return new WaitForSeconds(durationTime);
-        Random ran = new Random();
-        int index = ran.Next(1, rangeCount);
+        ;
+        int index = Random.Range(1, rangeCount + 1);
         ForbiddenAbility(index);
     }
 
@@ -273,10 +305,24 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(attackTime);
         knife.gameObject.SetActive(false);
     }
-
+    
 	public void Hurt(int damage)
 	{
 		if (damage > 0)
 			health -= damage;
 	}
+    void TwoWaysPlatFormCheck()
+    {
+        if (_isTwoWaysPlatForm && (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)))
+        {
+            gameObject.layer = LayerMask.NameToLayer("TwoWaysPlatForm");
+            StartCoroutine(LayChange());
+        }
+    }
+
+    private IEnumerator LayChange()
+    {
+        yield return new WaitForSeconds(LayerChangeTime);
+        gameObject.layer = LayerMask.NameToLayer("Default");
+    }
 }
