@@ -145,7 +145,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            health -= other.gameObject.GetComponent<Enemy>().GetDamage();
+			Hurt(other.gameObject.GetComponent<Enemy>().GetDamage());
         }
     }
 
@@ -212,4 +212,10 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(attackTime);
         knife.gameObject.SetActive(false);
     }
+
+	public void Hurt(int damage)
+	{
+		if (damage > 0)
+			health -= damage;
+	}
 }
