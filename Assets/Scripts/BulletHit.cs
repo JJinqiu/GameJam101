@@ -6,15 +6,20 @@ using UnityEngine;
 public class BulletHit : MonoBehaviour
 {
     public GameObject bulletPrefab;
-    public Camera cam;
-    [SerializeField]private Animator _animator;
+    private Camera cam;
+    [SerializeField] private Animator _animator;
     public float coolDown;
     public bool shootEnable;
     private bool _canShoot = true;
 
     private Vector3 _mousePosition;
     private Vector2 _bulletDirection;
-    
+
+    private void Start()
+    {
+        cam = FindObjectOfType<GlobalController>().GetCamera();
+    }
+
     // Update is called once per frame
     private void Update()
     {
@@ -37,7 +42,7 @@ public class BulletHit : MonoBehaviour
         yield return new WaitForSeconds(coolDown);
         _canShoot = true;
     }
-    
+
     public void Shoot()
     {
         Instantiate(bulletPrefab, transform.position, Quaternion.Euler(transform.eulerAngles));

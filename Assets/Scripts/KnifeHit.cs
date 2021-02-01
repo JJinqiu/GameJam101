@@ -6,24 +6,21 @@ using UnityEngine;
 public class KnifeHit : MonoBehaviour
 {
     public int damage;
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Enemy"))
         {
             other.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+        }
+
+        if (other.gameObject.CompareTag("Trigger"))
+        {
+            TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
+            if (item != null)
+            {
+                item.ColEnter();
+            }
         }
     }
 }

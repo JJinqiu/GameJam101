@@ -61,6 +61,16 @@ public abstract class ObjBase : MonoBehaviour
 		ResetAction();
 	}
 
+	public void SpecialEnter()
+	{
+		if (isChangingState && actions.Count > 1)
+			return;
+
+		isChangingState = true;
+		m_player = null;
+		StartAction();
+	}
+
 	public void StartAction()
     {
         if (indexOfAction >= actions.Count)

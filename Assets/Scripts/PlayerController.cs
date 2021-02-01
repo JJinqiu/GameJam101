@@ -23,9 +23,10 @@ public class PlayerController : MonoBehaviour
     private bool _shootEnable;
     private bool _hurtEnable = true;
     private int _dir = 1;
+    private bool _isDeath;
 
-    [SerializeField] private Collider2D circleCollider;
-    [SerializeField] private Collider2D boxCollider;
+    // [SerializeField] private Collider2D circleCollider;
+    // [SerializeField] private Collider2D boxCollider;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform knifeHitBox;
     [SerializeField] private Transform bulletHitBox;
@@ -37,6 +38,8 @@ public class PlayerController : MonoBehaviour
 
     public LayerMask ground;
     public LayerMask twoWaysPlatForm;
+    public LayerMask slate;
+    public LayerMask commandSlate;
     public Transform knife;
 
     public float walkSpeed;
@@ -68,6 +71,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         SetText();
+        StartCoroutine(ChangeAbilty());
     }
 
     // Update is called once per frame
@@ -95,11 +99,12 @@ public class PlayerController : MonoBehaviour
             _attackEnable = false;
             _animator.SetTrigger("knife_attack");
             StartCoroutine(AttackTime());
-            // Attack();
         }
 
         if (health <= 0)
         {
+            _isDeath = true;
+            _rigidbody2D.velocity = new Vector2(0, 0);
             _animator.SetTrigger("die");
         }
 
@@ -115,11 +120,14 @@ public class PlayerController : MonoBehaviour
     {
         _isTwoWaysPlatForm = Physics2D.OverlapCircle(groundCheck.position, 0.1f, twoWaysPlatForm);
         _isGround = Physics2D.OverlapCircle(groundCheck.position, 0.1f, ground) || _isTwoWaysPlatForm;
-        GroundMovement();
-        Jump();
-        Sprint();
-        SwitchAnimation();
-        TwoWaysPlatFormCheck();
+        if (!_isDeath)
+        {
+            GroundMovement();
+            Jump();
+            Sprint();
+            SwitchAnimation();
+            TwoWaysPlatFormCheck();
+        }
     }
 
     public void Attack()
@@ -229,6 +237,30 @@ public class PlayerController : MonoBehaviour
         {
             PowerUp2();
         }
+
+        if (other.gameObject.CompareTag("Trigger"))
+        {
+            TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
+            if (item != null)
+            {
+                item.ColEnter(this);
+            }
+        }
+
+        if (other.gameObject.CompareTag("Slate"))
+        {
+            this.transform.parent = other.transform;
+        }
+
+        if (other.gameObject.CompareTag("CommandSlate"))
+        {
+            this.transform.parent = other.transform;
+            TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
+            if (item != null)
+            {
+                item.ColEnter(this);
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -245,8 +277,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Trigger"))
+        if (other.gameObject.CompareTag("Slate"))
         {
+            this.transform.parent = null;
+        }
+
+        if (other.gameObject.CompareTag("CommandSlate"))
+        {
+            this.transform.parent = null;
             TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
             if (item != null)
             {
@@ -293,21 +331,27 @@ public class PlayerController : MonoBehaviour
         switch (index)
         {
             case 1:
+                SetText("听觉攻击lost");
                 SoundManager.instance.ForbiddenAudio();
                 break;
             case 2: // 攻击
+                SetText("近战攻击lost");
                 _attackEnable = false;
                 break;
             case 3: // 冲刺
+                SetText("冲刺lost");
                 _sprintEnabled = false;
                 break;
             case 4:
+                SetText("视觉lost");
                 sight.gameObject.SetActive(true);
                 break;
             case 5:
+                SetText("远程攻击lost");
                 _shootEnable = false;
                 break;
             case 6:
+                SetText("二段跳lost");
                 jumpCount = 1;
                 break;
         }
@@ -315,7 +359,7 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(ChangeAbilty());
     }
 
-    private void PowerUp1()
+    public void PowerUp1()
     {
         _attackEnable = true;
         _sprintEnabled = true;
@@ -323,7 +367,7 @@ public class PlayerController : MonoBehaviour
         rangeCount = 4;
     }
 
-    private void PowerUp2()
+    public void PowerUp2()
     {
         _shootEnable = true;
         jumpCount = 2;
@@ -334,6 +378,11 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(durationTime);
         int index = Random.Range(1, rangeCount + 1);
+        while (index == _lastIndex)
+        {
+            index = Random.Range(1, rangeCount + 1);
+        }
+
         ForbiddenAbility(index);
     }
 
@@ -361,7 +410,7 @@ public class PlayerController : MonoBehaviour
 
     public void Hurt(int damage)
     {
-        if (damage > 0)
+        if (damage > 0 && health >= 0) // health判断死亡后不断触发 
         {
             health -= damage;
             _hurtEnable = false;
@@ -393,11 +442,11 @@ public class PlayerController : MonoBehaviour
         _renderer.color = _originColor;
     }
 
-    public void SetText(String value = "测试文字1")
+    public void SetText(String value = "新青年")
     {
         textFloat.SetActive(true);
         textFloat.GetComponent<TextMesh>().text = value;
-        StartCoroutine(TextFloatTime());
+        // StartCoroutine(TextFloatTime());
     }
 
     private IEnumerator TextFloatTime()
@@ -435,5 +484,10 @@ public class PlayerController : MonoBehaviour
     {
         SoundManager.instance.DeathAudio();
         Destroy(gameObject);
+    }
+
+    public void Recover(int value)
+    {
+        health = value;
     }
 }

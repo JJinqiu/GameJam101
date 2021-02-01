@@ -10,15 +10,27 @@ public class SoundManager : MonoBehaviour
     public AudioSource actionAudioSource;
     public AudioClip bgm1;
     public AudioClip bgm2;
-    [SerializeField] private AudioClip jumpAudio;
+
     [SerializeField] private AudioClip knifeAudio;
     [SerializeField] private AudioClip bulletAudio;
+    [SerializeField] private AudioClip jumpAudio;
     [SerializeField] private AudioClip sprintAudio;
     [SerializeField] private AudioClip hurtAudio;
     [SerializeField] private AudioClip deathAudio;
+    [SerializeField] private AudioClip combatAttackAudio;
+    [SerializeField] private AudioClip combatHurtAudio;
+    [SerializeField] private AudioClip arrowAttackAudio;
+    [SerializeField] private AudioClip arrowHurtAudio;
+    [SerializeField] private AudioClip arrowFindAudio;
+    [SerializeField] private AudioClip joyStickAudio;
+    [SerializeField] private AudioClip pressSwitchAudio;
+    [SerializeField] private AudioClip floorCrashAudio;
+    [SerializeField] private AudioClip fallCellingAudio;
+    [SerializeField] private AudioClip chaosTrapAudio;
+    [SerializeField] private AudioClip openDoorAudioClip;
+
     [SerializeField] private AudioClip powerUpAudio;
     [SerializeField] private AudioClip collectionAudio;
-    
 
     private bool _audioEnable = true;
 
@@ -26,7 +38,6 @@ public class SoundManager : MonoBehaviour
     {
         instance = this;
     }
-
 
     public void ForbiddenAudio()
     {
@@ -112,6 +123,105 @@ public class SoundManager : MonoBehaviour
         if (_audioEnable)
         {
             actionAudioSource.clip = collectionAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void CombatAttackAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = combatAttackAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void CombatHurtAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = combatHurtAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void ArrowAttackAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = arrowAttackAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void ArrowHurtAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = arrowHurtAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void ArrowFindAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = arrowFindAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void JoyStickAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = joyStickAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void PressSwitchAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = pressSwitchAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void FloorCrashAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = floorCrashAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void FallCellingAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = fallCellingAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void ChaosTrapAudio()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = chaosTrapAudio;
+            actionAudioSource.Play();
+        }
+    }
+
+    public void OpenDoorAudioClip()
+    {
+        if (_audioEnable)
+        {
+            actionAudioSource.clip = openDoorAudioClip;
             actionAudioSource.Play();
         }
     }

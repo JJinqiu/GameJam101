@@ -6,6 +6,7 @@ using UnityEngine;
 public class CrackedSlate : ObjBase
 {
 	public GameObject slatePrefab;
+	public BoxCollider2D m_trigger;
 	private GameObject m_slate;
 	private ACTION_STATE m_state;
 
@@ -52,6 +53,7 @@ public class CrackedSlate : ObjBase
 		m_state++;
 		Debug.Log("破坏自身");
 		Destroy(m_slate);
+		m_trigger.enabled = false;
 		base.ConcreteAction();
 		StartAction();
 	}
@@ -66,6 +68,7 @@ public class CrackedSlate : ObjBase
 		Debug.Log("复原");
 		m_state = ACTION_STATE.STATE_ONE;
 		CreatSlate();
+		m_trigger.enabled = true;
 		base.ResetAction();
 	}
 }

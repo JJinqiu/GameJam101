@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 845511270}
   - component: {fileID: 845511271}
-  m_Layer: 0
+  - component: {fileID: 7853722075512224465}
+  m_Layer: 8
   m_Name: TriggerOffset
   m_TagString: Trigger
   m_Icon: {fileID: 0}
@@ -45,6 +46,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enterTarget: {fileID: 7167693440908206266}
   exitTarget: {fileID: 0}
+--- !u!61 &7853722075512224465
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 845511269}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.006000519, y: 0.083972454}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 5.034767, y: 0.5201578}
+  m_EdgeRadius: 0
 --- !u!1 &7167693440908206265
 GameObject:
   m_ObjectHideFlags: 0
@@ -55,7 +82,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7167693440908206267}
   - component: {fileID: 7167693440908206266}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CrackedSlate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,3 +122,4 @@ MonoBehaviour:
   - 3
   slatePrefab: {fileID: 4570515825621830110, guid: 3ebe3dbd911889f479a6d645a904423e,
     type: 3}
+  m_trigger: {fileID: 0}

@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7062608182512497666
 Transform:
   m_ObjectHideFlags: 0
@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 7062608182512497667}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2760967, y: 1.4818784, z: 1}
+  m_LocalScale: {x: 2.0266542, y: 2.2198002, z: 1}
   m_Children: []
   m_Father: {fileID: 7062608182531959405}
   m_RootOrder: 3
@@ -203,7 +203,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7062608182531959379}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -225,7 +225,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.2054801, y: 0.2801303}
+  m_Offset: {x: 0.18578601, y: -0.09405804}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -236,7 +236,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.0010624, y: 0.76585776}
+  m_Size: {x: 0.76473284, y: 1.5536222}
   m_EdgeRadius: 0
 --- !u!114 &7062608182531959401
 MonoBehaviour:
@@ -250,8 +250,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0abb9450b358c04eacf7f9fd74036e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  circleCollider: {fileID: 7062608182531959406}
-  boxCollider: {fileID: 7062608182531959404}
   groundCheck: {fileID: 7062608183889961339}
   knifeHitBox: {fileID: 7062608183802988136}
   bulletHitBox: {fileID: 7062608183554717372}
@@ -267,10 +265,16 @@ MonoBehaviour:
   twoWaysPlatForm:
     serializedVersion: 2
     m_Bits: 512
+  slate:
+    serializedVersion: 2
+    m_Bits: 0
+  commandSlate:
+    serializedVersion: 2
+    m_Bits: 0
   knife: {fileID: 7062608183802988136}
   walkSpeed: 5
-  jumpForce1: 9.5
-  jumpForce2: 12
+  jumpForce1: 11
+  jumpForce2: 14
   coolDown: 2
   attackTime: 1
   jumpCount: 1
@@ -509,7 +513,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 2997890890215195763, guid: 04479af713e6c634799d9c6e04b24664,
     type: 3}
-  cam: {fileID: 0}
   _animator: {fileID: 7062608182531959400}
   coolDown: 5
   shootEnable: 1

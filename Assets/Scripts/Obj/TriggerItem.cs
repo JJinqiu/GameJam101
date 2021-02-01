@@ -9,11 +9,16 @@ public class TriggerItem : MonoBehaviour
 	public ObjBase exitTarget;
 
 
-	public void ColEnter(PlayerController player)
+	public void ColEnter(PlayerController player = null)
 	{
 		if(player != null && enterTarget != null)
 		{
 			enterTarget.EnterAction(player);
+		}
+
+		if(player == null && enterTarget != null)
+		{
+			enterTarget.SpecialEnter();
 		}
 	}
 

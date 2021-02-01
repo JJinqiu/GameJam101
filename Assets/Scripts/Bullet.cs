@@ -41,5 +41,14 @@ public class Bullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        
+        if (other.gameObject.CompareTag("Trigger"))
+        {
+            TriggerItem item = other.gameObject.GetComponent<TriggerItem>();
+            if (item != null)
+            {
+                item.ColEnter();
+            }
+        }
     }
 }
